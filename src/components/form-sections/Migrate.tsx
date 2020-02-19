@@ -1,52 +1,70 @@
 import React from "react";
-import { Button, Modal } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { useStoreState } from "./../../state/hooks";
-import Period from "../../interfaces/types/period";
-import Program from "../../interfaces/types/program";
+import { Button } from "@material-ui/core";
+import { useStoreState, useStoreActions } from "./../../state/hooks";
 import Axios from "axios";
+import {
+  validateDescription,
+  validatePeriod,
+  validatePrograms
+} from "../../utils/validation";
+import Swal from "sweetalert2";
+import program from "../../state/models/program";
 
-const validatePeriod = (period: Period): boolean => {
-  return period.currentQuarter !== "0" && period.currentYear !== "0";
-};
-
-const validatePrograms = (programs: Program[]): boolean => {
-  return programs.filter(program => program.checked).length > 0;
-};
-
-const validateDescription = (text: string): boolean => {
-  return text.length >= 5;
-};
-function rand() {
-  return Math.round(Math.random() * 20) - 10;
-}
-
-function getModalStyle() {
-  const top = 50 + rand();
-  const left = 50 + rand();
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`
-  };
-}
-
-const useStyles = makeStyles(theme => ({
-  paper: {
-    position: "absolute",
-    width: 400,
-    backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3)
-  }
-}));
 const Migrate = () => {
-  let period = useStoreState(state => state.period.period);
-  let programs = useStoreState(state => state.program.items);
-  let description = useStoreState(state => state.description.text);
+  const period = useStoreState(state => state.period.period);
+  const programs = useStoreState(state => state.program.items);
+  const description = useStoreState(state => state.description.text);
   const facilities = useStoreState(state => state.facility.items);
+  const addError = useStoreActions(actions => actions.error.add);
+  const setShowErrors = useStoreActions(actions => actions.error.setShowErrors);
+  const clearErrors = useStoreActions(actions => actions.error.clear);
+
+  const validate = async () => {
+    clearErrors();
+    //TODO: verify the correctness of payload
+    //TODO: check that period  is valid
+    const isValidPeriod = validatePeriod(period);
+    !isValidPeriod && addError("Select a valid period");
+    //TODO: check that atleast a program is selected
+    const isValidPrograms = validatePrograms(programs);
+    !isValidPrograms && addError("Select at least one program");
+    //TODO: check that the payload description is provided, alot more checks could be to do with length os the string and what not
+    const isValidDescription = validateDescription(description);
+    !isValidDescription && addError("Provide a proper description");
+
+    //TODO: might wanna make sure the necessary feedback is sent to the client
+    if (!isValidPeriod || !isValidPrograms || !isValidDescription) {
+      setShowErrors(true);
+      return;
+    }
+
+    const programsText = programs
+      .filter(program => program.checked)
+      .reduce(
+        (acc, program) => `${acc ? `${acc},` : `${acc}<br />`}${program.name}`,
+        ""
+      );
+
+    Swal.fire({
+      title: "Confirm Migration",
+      html: `
+        <div style="margin: 0;">
+          <h5 style="margin: 0;">Programs: </h5>
+          ${programsText}
+          <h5>Period</h5>
+          ${period.currentYear} Quarter ${period.currentQuarter}
+        </div>
+      `,
+      confirmButtonColor: "#3f51b5",
+      confirmButtonText: "Yes, Migrate",
+      showCancelButton: true,
+      cancelButtonColor: "#d33"
+    }).then(result => {
+      if (result.value) {
+        migrate();
+      }
+    });
+  };
 
   const migrate = async () => {
     const {
@@ -56,16 +74,6 @@ const Migrate = () => {
       REACT_APP_DHAMIS_API_URL = "",
       REACT_APP_DHAMIS_API_KEY = ""
     } = process.env;
-    //TODO: verify the correctness of payload
-    //TODO: check that period  is valid
-    const isValidPeriod = validatePeriod(period);
-    //TODO: check that atleast a program is selected
-    const isValidPrograms = validatePrograms(programs);
-    //TODO: check that the payload description is provided, alot more checks could be to do with length os the string and what not
-    const isValidDescription = validateDescription(description);
-
-    //TODO: might wanna make sure the necessary feedback is sent to the client
-    if (!isValidPeriod || !isValidPrograms || !isValidDescription) return;
 
     const periodId =
       period.quarters.find(
@@ -77,13 +85,14 @@ const Migrate = () => {
     //TODO: might wanna make sure the necessary feedback is sent to the client
     if (!periodId) return;
 
+    //TODO: make sure all facilities are handled
     const allProgramsData: any[] = [];
     const checkedPrograms = programs.filter(program => program.checked);
     const facilityIds = facilities
-      .slice(600)
+      .slice(0, 10)
       .reduce((acc, cur) => `${acc},${cur.id}`, "")
       .slice(1);
-
+    console.log(facilityIds);
     for (let program of checkedPrograms) {
       try {
         const url = `${REACT_APP_DHAMIS_API_URL}/${program.value}/get/${REACT_APP_DHAMIS_API_KEY}/${periodId}/${facilityIds}`;
@@ -133,29 +142,29 @@ const Migrate = () => {
     //   }
     // );
     // console.log(ilResponse);
-    //TODO: give necessary feedback
+    //TODO: give necessary feedbackr'
+    Swal.fire({
+      icon: "success",
+      title: "Migration Initiated",
+      text: "An email will be sent once the migration has finished",
+      confirmButtonColor: "#3f51b5",
+      confirmButtonText: "okay"
+    }).then(result => {
+      if (result.value) {
+        console.log("now is the time");
+      }
+    });
+    Swal.fire(
+      "Migration Initiated",
+      "An email will be sent once the migration has finished",
+      "success"
+    );
   };
-
-  const classes = useStyles();
-  const [modalStyle] = React.useState(getModalStyle);
 
   return (
     <React.Fragment>
-      <Modal
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-        open={false}
-        onClose={() => {}}
-      >
-        <div style={modalStyle} className={classes.paper}>
-          <h2 id="simple-modal-title">Text in a modal</h2>
-          <p id="simple-modal-description">
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </p>
-        </div>
-      </Modal>
-      <Button variant="contained" color="primary" onClick={migrate}>
-        Migrate
+      <Button variant="contained" color="primary" onClick={validate}>
+        Review
       </Button>
     </React.Fragment>
   );

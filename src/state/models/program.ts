@@ -5,6 +5,7 @@ export interface ProgramModel {
   items: Program[];
   allProgramsChecked: boolean;
   toggleAllProgramsSelected: Action<ProgramModel, void>;
+  setAllProgramsChecked: Action<ProgramModel, boolean>;
   setChecked: Action<ProgramModel, number>;
 }
 
@@ -30,6 +31,9 @@ const program: ProgramModel = {
       ...item,
       checked
     }));
+  }),
+  setAllProgramsChecked: action((state, payload) => {
+    state.allProgramsChecked = payload;
   })
 };
 

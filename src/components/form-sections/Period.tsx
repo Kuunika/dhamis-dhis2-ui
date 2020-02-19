@@ -4,10 +4,12 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  FormLabel
 } from "@material-ui/core";
 import { useStoreActions, useStoreState } from "../../state/hooks";
 import KV from "../../interfaces/types/kv";
+import StyledBox from "../StyledBox";
 
 const Period = () => {
   const selectFormControlStyles = {
@@ -29,49 +31,55 @@ const Period = () => {
 
   return (
     <React.Fragment>
-      <Grid container justify="flex-start">
-        <Grid item xs={6}>
-          <div style={{ maxWidth: "98%" }}>
-            <FormControl style={selectFormControlStyles}>
-              <InputLabel id="demo-simple-select-label">Year</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={currentYear}
-                onChange={handleChange}
-                name="year"
-              >
-                {years.map(year => (
-                  <MenuItem key={year} value={year}>
-                    {year}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
+      <FormControl component="fieldset" style={{ width: "100%" }}>
+        <StyledBox marginBottom="10px">
+          <FormLabel component="legend">Migration Period</FormLabel>
+        </StyledBox>
+        <Grid container justify="flex-start">
+          <Grid item xs={6}>
+            <div style={{ maxWidth: "98%" }}>
+              <FormControl style={selectFormControlStyles}>
+                <InputLabel id="demo-simple-select-label">Year</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={currentYear}
+                  onChange={handleChange}
+                  name="year"
+                  required
+                >
+                  {years.map(year => (
+                    <MenuItem key={year} value={year}>
+                      {year}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+          </Grid>
+          <Grid item xs={6}>
+            <div style={{ maxWidth: "98%" }}>
+              <FormControl style={selectFormControlStyles}>
+                <InputLabel id="demo-simple-select-label">Quarter</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={currentQuarter}
+                  onChange={handleChange}
+                  name="quarter"
+                  required
+                >
+                  {uiQuarters.map(uiQuarter => (
+                    <MenuItem key={uiQuarter} value={uiQuarter}>
+                      Quarter {uiQuarter}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+          </Grid>
         </Grid>
-        <Grid item xs={6}>
-          <div style={{ maxWidth: "98%" }}>
-            <FormControl style={selectFormControlStyles}>
-              <InputLabel id="demo-simple-select-label">Quarter</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={currentQuarter}
-                onChange={handleChange}
-                name="quarter"
-              >
-                {uiQuarters.map(uiQuarter => (
-                  <MenuItem
-                    key={uiQuarter}
-                    value={uiQuarter}
-                  >{`${uiQuarter}`}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
-        </Grid>
-      </Grid>
+      </FormControl>
     </React.Fragment>
   );
 };

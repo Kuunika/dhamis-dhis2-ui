@@ -22,6 +22,7 @@ const Description = () => {
         rows="4"
         variant="outlined"
         value={description.text}
+        required
         onChange={e => handleTextChange(e)}
       />
     </div>

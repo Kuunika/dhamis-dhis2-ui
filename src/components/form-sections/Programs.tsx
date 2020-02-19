@@ -4,24 +4,31 @@ import {
   FormLabel,
   FormGroup,
   FormControlLabel,
-  Checkbox
+  Checkbox,
+  Button
 } from "@material-ui/core";
 import { useStoreActions, useStoreState } from "../../state/hooks";
+import StyledBox from "../StyledBox";
 
 const Programs = () => {
   const program = useStoreState(state => state.program);
-
   const programs = program.items;
   const allProgramsChecked = program.allProgramsChecked;
 
   const programActions = useStoreActions(actions => actions.program);
-  const { setChecked, toggleAllProgramsSelected } = programActions;
+  const {
+    setChecked,
+    toggleAllProgramsSelected,
+    setAllProgramsChecked
+  } = programActions;
 
-  const handleChange = (
-    programIndex: number,
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChange = (programIndex: number) => {
     setChecked(programIndex);
+    if (
+      programs.filter(program => program.checked).length ===
+      programs.length - 1
+    )
+      setAllProgramsChecked(true);
   };
   const handleToggleSelection = () => {
     toggleAllProgramsSelected();
@@ -35,19 +42,9 @@ const Programs = () => {
   };
 
   return (
-    <>
+    <StyledBox marginBottom="15px" marginTop="15px">
       <FormControl component="fieldset">
-        <FormLabel component="legend">Select ART Dataset to Migrate</FormLabel>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={isChecked()}
-              value={false}
-              onChange={handleToggleSelection}
-            />
-          }
-          label={<span>{!isChecked() ? "select all" : "unselect all"}</span>}
-        />
+        <FormLabel component="legend">ART Dataset(s) to Migrate</FormLabel>
         <FormGroup>
           {programs.map((program, index) => (
             <FormControlLabel
@@ -55,7 +52,7 @@ const Programs = () => {
                 <Checkbox
                   checked={program.checked}
                   value={12}
-                  onChange={e => handleChange(index, e)}
+                  onChange={() => handleChange(index)}
                 />
               }
               label={program.name}
@@ -63,8 +60,13 @@ const Programs = () => {
             />
           ))}
         </FormGroup>
+        <div>
+          <Button size="small" onClick={handleToggleSelection}>
+            {!isChecked() ? "select all" : "unselect all"}
+          </Button>
+        </div>
       </FormControl>
-    </>
+    </StyledBox>
   );
 };
 

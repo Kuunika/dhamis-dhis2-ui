@@ -30,6 +30,9 @@ const period: PeriodModel = {
   }),
   initializePeriod: action((state, payload) => {
     state.period = payload;
+    state.period.years = state.period.years.filter(
+      year => parseInt(year) < new Date().getFullYear() + 1
+    );
   })
 };
 
