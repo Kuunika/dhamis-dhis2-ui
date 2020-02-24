@@ -8,13 +8,16 @@ export enum Initializer {
 export interface AppModel {
   facilitiesInitialized: boolean;
   periodInitialized: boolean;
+  isMigrating: boolean;
   appInitialized: Computed<AppModel, boolean>;
   init: Action<AppModel, Initializer>;
+  setMigrating: Action<AppModel, boolean>;
 }
 
 const app: AppModel = {
   facilitiesInitialized: false,
   periodInitialized: false,
+  isMigrating: false,
   appInitialized: computed(state => {
     const { facilitiesInitialized, periodInitialized } = state;
     return facilitiesInitialized && periodInitialized;
@@ -28,6 +31,9 @@ const app: AppModel = {
         state.periodInitialized = true;
         break;
     }
+  }),
+  setMigrating: action((state, payload) => {
+    state.isMigrating = payload;
   })
 };
 

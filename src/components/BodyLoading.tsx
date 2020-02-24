@@ -50,11 +50,6 @@ const BodyLoading = () => {
               <StyledBox marginTop={regularMargin}>
                 <Skeleton variant="rect" width={80} height={40} />
               </StyledBox>
-              <StyledBox marginTop={regularMargin}>
-                <Typography color="textSecondary">
-                  Loading application...
-                </Typography>
-              </StyledBox>
             </CardContent>
           </Card>
         </Container>

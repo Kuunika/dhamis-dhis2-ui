@@ -1,6 +1,7 @@
 import { Action, action } from "easy-peasy";
+import Clearable from "../../interfaces/types/clearable";
 
-export interface ErrorModel {
+export interface ErrorModel extends Clearable<ErrorModel> {
   items: string[];
   showErrors: boolean;
   setShowErrors: Action<ErrorModel, boolean>;

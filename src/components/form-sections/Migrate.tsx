@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@material-ui/core";
+import { Button, CircularProgress } from "@material-ui/core";
 import { useStoreState, useStoreActions } from "./../../state/hooks";
 import Axios from "axios";
 import {
@@ -8,28 +8,30 @@ import {
   validatePrograms
 } from "../../utils/validation";
 import Swal from "sweetalert2";
-import program from "../../state/models/program";
+import { makeStyles } from "@material-ui/core/styles";
+import { blue } from "@material-ui/core/colors";
+import clsx from "clsx";
 
 const Migrate = () => {
-  const period = useStoreState(state => state.period.period);
+  const periodState = useStoreState(state => state.period.period);
   const programs = useStoreState(state => state.program.items);
-  const description = useStoreState(state => state.description.text);
+  const text = useStoreState(state => state.description.text);
   const facilities = useStoreState(state => state.facility.items);
+  const isMigrating = useStoreState(state => state.app.isMigrating);
+  const setMigrating = useStoreActions(actions => actions.app.setMigrating);
   const addError = useStoreActions(actions => actions.error.add);
   const setShowErrors = useStoreActions(actions => actions.error.setShowErrors);
   const clearErrors = useStoreActions(actions => actions.error.clear);
+  const { program, period, description } = useStoreActions(actions => actions);
 
   const validate = async () => {
     clearErrors();
-    //TODO: verify the correctness of payload
-    //TODO: check that period  is valid
-    const isValidPeriod = validatePeriod(period);
+
+    const isValidPeriod = validatePeriod(periodState);
     !isValidPeriod && addError("Select a valid period");
-    //TODO: check that atleast a program is selected
     const isValidPrograms = validatePrograms(programs);
     !isValidPrograms && addError("Select at least one program");
-    //TODO: check that the payload description is provided, alot more checks could be to do with length os the string and what not
-    const isValidDescription = validateDescription(description);
+    const isValidDescription = validateDescription(text);
     !isValidDescription && addError("Provide a proper description");
 
     //TODO: might wanna make sure the necessary feedback is sent to the client
@@ -52,10 +54,10 @@ const Migrate = () => {
           <h5 style="margin: 0;">Programs: </h5>
           ${programsText}
           <h5>Period</h5>
-          ${period.currentYear} Quarter ${period.currentQuarter}
+          ${periodState.currentYear} Quarter ${periodState.currentQuarter}
         </div>
       `,
-      confirmButtonColor: "#3f51b5",
+      confirmButtonColor: "#2196f3",
       confirmButtonText: "Yes, Migrate",
       showCancelButton: true,
       cancelButtonColor: "#d33"
@@ -67,6 +69,7 @@ const Migrate = () => {
   };
 
   const migrate = async () => {
+    setMigrating(true);
     const {
       REACT_APP_INTEROP_CLIENT_USERNAME = "",
       REACT_APP_INTEROP_CLIENT_PASSWORD = "",
@@ -76,10 +79,10 @@ const Migrate = () => {
     } = process.env;
 
     const periodId =
-      period.quarters.find(
+      periodState.quarters.find(
         quarter =>
-          quarter.year === period.currentYear &&
-          quarter.quarter === period.currentQuarter
+          quarter.year === periodState.currentYear &&
+          quarter.quarter === periodState.currentQuarter
       )?.id || null;
 
     //TODO: might wanna make sure the necessary feedback is sent to the client
@@ -126,10 +129,19 @@ const Migrate = () => {
     console.log(dhamisData);
 
     const payload = {
-      description,
-      "reporting-period": `${period.currentYear}Q${period.currentQuarter}`,
+      text,
+      "reporting-period": `${periodState.currentYear}Q${periodState.currentQuarter}`,
       facilities: dhamisData
     };
+
+    // TODO: this needs to go
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve({ name: true });
+      }, 5000);
+    });
+
+    // TODO: as we are awaiting, we need to have the loading show up somehow
 
     // const ilResponse = await Axios.post(
     //   `${REACT_APP_INTEROP_URL}/data-elements`,
@@ -147,7 +159,7 @@ const Migrate = () => {
       icon: "success",
       title: "Migration Initiated",
       text: "An email will be sent once the migration has finished",
-      confirmButtonColor: "#3f51b5",
+      confirmButtonColor: "#2196f3",
       confirmButtonText: "okay"
     }).then(result => {
       if (result.value) {
@@ -159,13 +171,63 @@ const Migrate = () => {
       "An email will be sent once the migration has finished",
       "success"
     );
+
+    setMigrating(false);
+
+    // TODO: maybe done better
+    program.clear();
+    description.clear();
+    period.clear();
   };
+
+  const useStyles = makeStyles(theme => ({
+    root: {
+      display: "flex",
+      alignItems: "center"
+    },
+    wrapper: {
+      margin: theme.spacing(1),
+      position: "relative"
+    },
+    buttonSuccess: {
+      backgroundColor: blue[500],
+      "&:hover": {
+        backgroundColor: blue[700]
+      }
+    },
+    buttonProgress: {
+      color: blue[500],
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      marginTop: -12,
+      marginLeft: -12
+    }
+  }));
+
+  const classes = useStyles();
+  const buttonClassname = clsx({
+    [classes.buttonSuccess]: true
+  });
 
   return (
     <React.Fragment>
-      <Button variant="contained" color="primary" onClick={validate}>
-        Review
-      </Button>
+      <div className={classes.root}>
+        <div className={classes.wrapper}>
+          <Button
+            variant="contained"
+            color="primary"
+            className={buttonClassname}
+            disabled={isMigrating}
+            onClick={validate}
+          >
+            {isMigrating ? "Migrating..." : "Migrate"}
+          </Button>
+          {isMigrating && (
+            <CircularProgress size={24} className={classes.buttonProgress} />
+          )}
+        </div>
+      </div>
     </React.Fragment>
   );
 };

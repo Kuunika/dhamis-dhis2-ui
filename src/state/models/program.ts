@@ -1,7 +1,8 @@
 import { Action, action } from "easy-peasy";
 import Program from "../../interfaces/types/program";
+import Clearable from "../../interfaces/types/clearable";
 
-export interface ProgramModel {
+export interface ProgramModel extends Clearable<ProgramModel> {
   items: Program[];
   allProgramsChecked: boolean;
   toggleAllProgramsSelected: Action<ProgramModel, void>;
@@ -34,6 +35,9 @@ const program: ProgramModel = {
   }),
   setAllProgramsChecked: action((state, payload) => {
     state.allProgramsChecked = payload;
+  }),
+  clear: action(state => {
+    state.items = state.items.map(item => ({ ...item, checked: false }));
   })
 };
 
