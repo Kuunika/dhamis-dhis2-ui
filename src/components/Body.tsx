@@ -1,19 +1,24 @@
 import React, { useEffect } from "react";
 import { Container, Card, CardContent, Typography } from "@material-ui/core";
 import MigrationForm from "./MigrationForm";
-import { useStoreActions } from "../state/hooks";
+import { useStoreActions, useStoreState } from "../state/hooks";
 import axios from "axios";
 import Facility from "../interfaces/types/facility";
-import { StyledBox } from ".";
+import { StyledBox, BodyLoading } from ".";
+import { Initializer } from "../state/models/app";
 
 const Body = () => {
   const { REACT_APP_DHAMIS_API_URL, REACT_APP_DHAMIS_API_KEY } = process.env;
   const initializePeriod = useStoreActions(
     state => state.period.initializePeriod
   );
+  const appInitialized = useStoreState(state => state.app.appInitialized);
+  const init = useStoreActions(actions => actions.app.init);
+
   const initializeFacilities = useStoreActions(
     state => state.facility.initializeFacilities
   );
+
   useEffect(() => {
     axios
       .get(`${REACT_APP_DHAMIS_API_URL}/quarters/${REACT_APP_DHAMIS_API_KEY}`)
@@ -31,6 +36,7 @@ const Body = () => {
           uiQuarters,
           quarters: response.data
         });
+        init(Initializer.PERIOD);
       })
       .catch(e => {
         //TODO: give user feedback
@@ -47,13 +53,14 @@ const Body = () => {
           id: d.id
         }));
         initializeFacilities(facilities);
+        init(Initializer.FACILITIES);
       })
       .catch(e => {
         //TODO: give user feedback
         console.log(e);
       });
   });
-  return (
+  const appLoadedUI = (
     <React.Fragment>
       <StyledBox marginTop="20px">
         <Container maxWidth="sm">
@@ -69,6 +76,8 @@ const Body = () => {
       </StyledBox>
     </React.Fragment>
   );
+
+  return appInitialized ? appLoadedUI : <BodyLoading />;
 };
 
 export default Body;

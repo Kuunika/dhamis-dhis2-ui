@@ -2,11 +2,12 @@ import Program from "../interfaces/types/program";
 import Period from "../interfaces/types/period";
 
 export const validatePeriod = (period: Period): boolean => {
+  const { currentQuarter, currentYear } = period;
   return (
-    period.currentQuarter !== "0" &&
-    period.currentQuarter !== "" &&
-    period.currentYear !== "0" &&
-    period.currentYear !== ""
+    currentQuarter !== "0" &&
+    currentQuarter !== "" &&
+    currentYear !== "0" &&
+    currentYear !== ""
   );
 };
 

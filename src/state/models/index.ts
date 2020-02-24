@@ -3,6 +3,7 @@ import period, { PeriodModel } from "./period";
 import description, { DescriptionModel } from "./description";
 import facility, { FacilityModel } from "./facility";
 import error, { ErrorModel } from "./error";
+import app, { AppModel } from "./app";
 
 export interface StoreModel {
   program: ProgramModel;
@@ -10,6 +11,7 @@ export interface StoreModel {
   description: DescriptionModel;
   facility: FacilityModel;
   error: ErrorModel;
+  app: AppModel;
 }
 
 const model: StoreModel = {
@@ -17,7 +19,8 @@ const model: StoreModel = {
   period,
   description,
   facility,
-  error
+  error,
+  app
 };
 
 export default model;

@@ -5,6 +5,7 @@ import { Period, Programs, Description, Migrate } from "./form-sections";
 import MigrationForm from "./MigrationForm";
 import StyledBox from "./StyledBox";
 import Errors from "./Errors";
+import BodyLoading from "./BodyLoading";
 
 export {
   Header,
@@ -16,5 +17,6 @@ export {
   MigrationForm,
   Migrate,
   StyledBox,
-  Errors
+  Errors,
+  BodyLoading
 };
