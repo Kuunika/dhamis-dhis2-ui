@@ -7,10 +7,13 @@ import {
   validatePeriod,
   validatePrograms
 } from "../../utils/validation";
-import Swal from "sweetalert2";
 import { makeStyles } from "@material-ui/core/styles";
 import { blue } from "@material-ui/core/colors";
 import clsx from "clsx";
+import {
+  confirmMigrationAlert,
+  migrationInitiatedAlert
+} from "../../utils/alerts";
 
 const Migrate = () => {
   const periodState = useStoreState(state => state.period.period);
@@ -47,25 +50,7 @@ const Migrate = () => {
         ""
       );
 
-    Swal.fire({
-      title: "Confirm Migration",
-      html: `
-        <div style="margin: 0;">
-          <h5 style="margin: 0;">Programs: </h5>
-          ${programsText}
-          <h5>Period</h5>
-          ${periodState.currentYear} Quarter ${periodState.currentQuarter}
-        </div>
-      `,
-      confirmButtonColor: "#2196f3",
-      confirmButtonText: "Yes, Migrate",
-      showCancelButton: true,
-      cancelButtonColor: "#d33"
-    }).then(result => {
-      if (result.value) {
-        migrate();
-      }
-    });
+    confirmMigrationAlert(migrate, programsText, periodState);
   };
 
   const migrate = async () => {
@@ -155,25 +140,9 @@ const Migrate = () => {
     // );
     // console.log(ilResponse);
     //TODO: give necessary feedbackr'
-    Swal.fire({
-      icon: "success",
-      title: "Migration Initiated",
-      text: "An email will be sent once the migration has finished",
-      confirmButtonColor: "#2196f3",
-      confirmButtonText: "okay"
-    }).then(result => {
-      if (result.value) {
-        console.log("now is the time");
-      }
-    });
-    Swal.fire(
-      "Migration Initiated",
-      "An email will be sent once the migration has finished",
-      "success"
-    );
+    migrationInitiatedAlert();
 
     setMigrating(false);
-
     // TODO: maybe done better
     program.clear();
     description.clear();
