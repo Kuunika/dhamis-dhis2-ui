@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Container,
-  Card,
-  CardContent,
-  Grid,
-  Typography
-} from "@material-ui/core";
+import { Container, Card, CardContent, Grid } from "@material-ui/core";
 import Skeleton from "@material-ui/lab/Skeleton";
 import { StyledBox } from ".";
 
