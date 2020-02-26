@@ -7,7 +7,7 @@ export interface DescriptionModel extends Clearable<DescriptionModel> {
 }
 
 const description: DescriptionModel = {
-  text: "Description right??",
+  text: "",
   setDescription: action((state, payload) => {
     state.text = payload.text;
   }),
