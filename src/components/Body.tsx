@@ -6,6 +6,7 @@ import axios from "axios";
 import Facility from "../interfaces/types/facility";
 import { StyledBox, BodyLoading } from ".";
 import { Initializer } from "../state/models/app";
+import { alertOnError } from "../modules/alerts";
 
 const Body = () => {
   const { REACT_APP_DHAMIS_API_URL, REACT_APP_DHAMIS_API_KEY } = process.env;
@@ -43,7 +44,7 @@ const Body = () => {
         }
       })
       .catch(e => {
-        alert(e.message);
+        alertOnError(e.message);
       });
 
     axios
@@ -63,7 +64,7 @@ const Body = () => {
         }
       })
       .catch(e => {
-        alert(e.message);
+        alertOnError(e.message);
       });
   });
   const appLoadedUI = (
