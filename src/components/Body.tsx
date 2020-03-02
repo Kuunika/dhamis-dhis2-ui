@@ -23,24 +23,27 @@ const Body = () => {
     axios
       .get(`${REACT_APP_DHAMIS_API_URL}/quarters/${REACT_APP_DHAMIS_API_KEY}`)
       .then(response => {
-        const years = Array.from(
-          new Set(response.data.map((data: any) => data.year))
-        ).map(s => String(s));
-        const [currentYear] = years;
-        const uiQuarters = ["1", "2", "3", "4"];
-        const [currentQuarter] = uiQuarters;
-        initializePeriod({
-          years,
-          currentQuarter,
-          currentYear,
-          uiQuarters,
-          quarters: response.data
-        });
-        init(Initializer.PERIOD);
+        if (response.data instanceof Array) {
+          const years = Array.from(
+            new Set(response.data.map((data: any) => data.year))
+          ).map(s => String(s));
+          const [currentYear] = years;
+          const uiQuarters = ["1", "2", "3", "4"];
+          const [currentQuarter] = uiQuarters;
+          initializePeriod({
+            years,
+            currentQuarter,
+            currentYear,
+            uiQuarters,
+            quarters: response.data
+          });
+          init(Initializer.PERIOD);
+        } else {
+          throw new Error("Returned period data is not processable");
+        }
       })
       .catch(e => {
-        //TODO: give user feedback
-        console.log(e);
+        alert(e.message);
       });
 
     axios
@@ -48,16 +51,19 @@ const Body = () => {
         `${REACT_APP_DHAMIS_API_URL}/healthfacilities/get/${REACT_APP_DHAMIS_API_KEY}`
       )
       .then(response => {
-        const facilities: Facility[] = response.data.map((d: any) => ({
-          facility_name: d.facility_name,
-          id: d.id
-        }));
-        initializeFacilities(facilities);
-        init(Initializer.FACILITIES);
+        if (response.data instanceof Array) {
+          const facilities: Facility[] = response.data.map((d: any) => ({
+            facility_name: d.facility_name,
+            id: d.id
+          }));
+          initializeFacilities(facilities);
+          init(Initializer.FACILITIES);
+        } else {
+          throw new Error("Returned facilities data is not processable");
+        }
       })
       .catch(e => {
-        //TODO: give user feedback
-        console.log(e);
+        alert(e.message);
       });
   });
   const appLoadedUI = (

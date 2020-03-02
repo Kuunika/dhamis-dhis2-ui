@@ -1,19 +1,20 @@
 import React from "react";
 import { Button, CircularProgress } from "@material-ui/core";
 import { useStoreState, useStoreActions } from "./../../state/hooks";
-import Axios from "axios";
 import {
   validateDescription,
   validatePeriod,
   validatePrograms
-} from "../../utils/validation";
+} from "../../modules/validators";
 import { makeStyles } from "@material-ui/core/styles";
 import { blue } from "@material-ui/core/colors";
 import clsx from "clsx";
 import {
   confirmMigrationAlert,
-  migrationInitiatedAlert
-} from "../../utils/alerts";
+  migrationInitiatedAlert,
+  alertOnError
+} from "../../modules/alerts";
+import { processFacilities } from "../../modules/processors";
 
 const Migrate = () => {
   const periodState = useStoreState(state => state.period.period);
@@ -55,14 +56,6 @@ const Migrate = () => {
 
   const migrate = async () => {
     setMigrating(true);
-    const {
-      REACT_APP_INTEROP_CLIENT_USERNAME = "",
-      REACT_APP_INTEROP_CLIENT_PASSWORD = "",
-      REACT_APP_INTEROP_URL = "",
-      REACT_APP_DHAMIS_API_URL = "",
-      REACT_APP_DHAMIS_API_KEY = ""
-    } = process.env;
-
     const periodId =
       periodState.quarters.find(
         quarter =>
@@ -71,36 +64,26 @@ const Migrate = () => {
       )?.id || null;
 
     //TODO: might wanna make sure the necessary feedback is sent to the client
-    if (!periodId) return;
-
-    //TODO: make sure all facilities are handled
-    const allProgramsData: any[] = [];
-    const checkedPrograms = programs.filter(program => program.checked);
-    const facilityIds = facilities
-      .slice(0, 10)
-      .reduce((acc, cur) => `${acc},${cur.id}`, "")
-      .slice(1);
-    console.log(facilityIds);
-    for (let program of checkedPrograms) {
-      try {
-        const url = `${REACT_APP_DHAMIS_API_URL}/${program.value}/get/${REACT_APP_DHAMIS_API_KEY}/${periodId}/${facilityIds}`;
-        console.log(url);
-        const response = await Axios.get(url);
-        allProgramsData.push(response.data);
-      } catch (e) {
-        console.log(e.message);
-      }
+    if (!periodId) {
+      alertOnError("what went wrong");
+      return;
     }
 
-    //TODO: avoid duplication of keys
+    const checkedPrograms = programs.filter(program => program.checked);
+    const allProgramsData: any[] = await processFacilities(
+      facilities,
+      checkedPrograms,
+      periodId
+    );
+
     const facilityData = allProgramsData.reduce((accumulated, current) => {
       return [...accumulated, ...current["facilities"]];
     }, []);
 
-    //TODO: filter all the missing facilities and products
     const properFacilities = facilityData.filter(
       (fd: any) => fd["facility-code"]
     );
+
     const dhamisData = properFacilities.map((pf: any) => ({
       ...pf,
       values: pf["values"]
@@ -111,38 +94,18 @@ const Migrate = () => {
         }))
     }));
 
-    console.log(dhamisData);
-
     const payload = {
       text,
       "reporting-period": `${periodState.currentYear}Q${periodState.currentQuarter}`,
       facilities: dhamisData
     };
 
-    // TODO: this needs to go
-    await new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve({ name: true });
-      }, 5000);
-    });
-
-    // TODO: as we are awaiting, we need to have the loading show up somehow
-
-    // const ilResponse = await Axios.post(
-    //   `${REACT_APP_INTEROP_URL}/data-elements`,
-    //   payload,
-    //   {
-    //     auth: {
-    //       username: REACT_APP_INTEROP_CLIENT_USERNAME,
-    //       password: REACT_APP_INTEROP_CLIENT_PASSWORD
-    //     }
-    //   }
-    // );
-    // console.log(ilResponse);
-    //TODO: give necessary feedbackr'
+   
+    //TODO: give necessary feedback'
     migrationInitiatedAlert();
 
     setMigrating(false);
+
     // TODO: maybe done better
     program.clear();
     description.clear();

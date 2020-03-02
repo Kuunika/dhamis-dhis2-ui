@@ -45,3 +45,7 @@ export const migrationInitiatedAlert = () => {
     "success"
   );
 };
+
+export const alertOnError = (message: string) => {
+  alert(message);
+};
