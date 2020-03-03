@@ -1,0 +1,9 @@
+{
+  "env": {
+    "REACT_APP_DHAMIS_API_URL": "http://196.216.12.28:81/api",
+    "REACT_APP_DHAMIS_API_KEY": "a4595012",
+    "REACT_APP_INTEROP_URL": "http://sqa-deployment.kuunika.org:5001/dhis2",
+    "REACT_APP_INTEROP_CLIENT_USERNAME": "dhamis",
+    "REACT_APP_INTEROP_CLIENT_PASSWORD": "dhamis"
+  }
+}

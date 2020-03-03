@@ -47,9 +47,10 @@ const Period = () => {
                   onChange={handleChange}
                   name="year"
                   required
+                  data-testid="year-field"
                 >
                   {years.map(year => (
-                    <MenuItem key={year} value={year}>
+                    <MenuItem key={year} value={year} data-testid="year-option">
                       {year}
                     </MenuItem>
                   ))}
@@ -68,9 +69,14 @@ const Period = () => {
                   onChange={handleChange}
                   name="quarter"
                   required
+                  data-testid="quarter-field"
                 >
                   {uiQuarters.map(uiQuarter => (
-                    <MenuItem key={uiQuarter} value={uiQuarter}>
+                    <MenuItem
+                      key={uiQuarter}
+                      value={uiQuarter}
+                      data-testid="quarter-option"
+                    >
                       Quarter {uiQuarter}
                     </MenuItem>
                   ))}

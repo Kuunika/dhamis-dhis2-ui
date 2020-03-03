@@ -100,7 +100,6 @@ const Migrate = () => {
       facilities: dhamisData
     };
 
-   
     //TODO: give necessary feedback'
     migrationInitiatedAlert();
 
@@ -147,6 +146,7 @@ const Migrate = () => {
       <div className={classes.root}>
         <div className={classes.wrapper}>
           <Button
+            data-testid="migration-btn"
             variant="contained"
             color="primary"
             className={buttonClassname}

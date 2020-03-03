@@ -1,0 +1,152 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders app 1`] = `
+<body>
+  <div>
+    <header
+      class="MuiPaper-root MuiAppBar-root MuiAppBar-positionStatic MuiAppBar-colorPrimary MuiPaper-elevation4"
+    >
+      <div
+        class="MuiToolbar-root MuiToolbar-regular MuiToolbar-gutters"
+      />
+    </header>
+    <div
+      style="width: 100%; margin-top: 20px; margin-bottom: 0px;"
+    >
+      <div
+        class="MuiContainer-root MuiContainer-maxWidthSm"
+      >
+        <div
+          class="MuiPaper-root MuiCard-root MuiPaper-elevation8 MuiPaper-rounded"
+        >
+          <div
+            class="MuiCardContent-root"
+          >
+            <div
+              class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1"
+            >
+              <div
+                class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-6"
+              >
+                <span
+                  class="MuiSkeleton-root MuiSkeleton-rect MuiSkeleton-pulse"
+                  style="height: 30px;"
+                />
+              </div>
+              <div
+                class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-6"
+              >
+                <span
+                  class="MuiSkeleton-root MuiSkeleton-rect MuiSkeleton-pulse"
+                  style="height: 30px;"
+                />
+              </div>
+              <div
+                class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-10"
+              >
+                <div
+                  style="width: 100%; margin-top: 8px; margin-bottom: 5px;"
+                >
+                  <span
+                    class="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse"
+                    style="height: 30px;"
+                  />
+                </div>
+              </div>
+              <div
+                style="width: 100%; margin-top: 0px; margin-bottom: 8px;"
+              >
+                <div
+                  class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2"
+                >
+                  <div
+                    class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-1"
+                  >
+                    <span
+                      class="MuiSkeleton-root MuiSkeleton-rect MuiSkeleton-pulse"
+                      style="height: 30px;"
+                    />
+                  </div>
+                  <div
+                    class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-6"
+                  >
+                    <span
+                      class="MuiSkeleton-root MuiSkeleton-rect MuiSkeleton-pulse"
+                      style="height: 30px;"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                style="width: 100%; margin-top: 0px; margin-bottom: 8px;"
+              >
+                <div
+                  class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2"
+                >
+                  <div
+                    class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-1"
+                  >
+                    <span
+                      class="MuiSkeleton-root MuiSkeleton-rect MuiSkeleton-pulse"
+                      style="height: 30px;"
+                    />
+                  </div>
+                  <div
+                    class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-6"
+                  >
+                    <span
+                      class="MuiSkeleton-root MuiSkeleton-rect MuiSkeleton-pulse"
+                      style="height: 30px;"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                style="width: 100%; margin-top: 0px; margin-bottom: 8px;"
+              >
+                <div
+                  class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2"
+                >
+                  <div
+                    class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-1"
+                  >
+                    <span
+                      class="MuiSkeleton-root MuiSkeleton-rect MuiSkeleton-pulse"
+                      style="height: 30px;"
+                    />
+                  </div>
+                  <div
+                    class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-6"
+                  >
+                    <span
+                      class="MuiSkeleton-root MuiSkeleton-rect MuiSkeleton-pulse"
+                      style="height: 30px;"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
+              >
+                <span
+                  class="MuiSkeleton-root MuiSkeleton-rect MuiSkeleton-pulse"
+                  style="height: 120px;"
+                />
+              </div>
+            </div>
+            <div
+              style="width: 100%; margin-top: 8px; margin-bottom: 0px;"
+            >
+              <span
+                class="MuiSkeleton-root MuiSkeleton-rect MuiSkeleton-pulse"
+                style="width: 80px; height: 40px;"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div />
+  </div>
+</body>
+`;
