@@ -24,6 +24,7 @@ const Description = () => {
         value={description.text}
         required
         onChange={e => handleTextChange(e)}
+        data-testid="description-field"
       />
     </div>
   );

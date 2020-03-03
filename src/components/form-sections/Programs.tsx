@@ -51,12 +51,14 @@ const Programs = () => {
               control={
                 <Checkbox
                   checked={program.checked}
-                  value={12}
+                  value={program.value}
                   onChange={() => handleChange(index)}
                 />
               }
               label={program.name}
               key={program.value}
+              data-testid="program-option"
+              data-value={program.value}
             />
           ))}
         </FormGroup>

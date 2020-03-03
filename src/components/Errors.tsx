@@ -16,7 +16,7 @@ const Errors: React.FC = () => {
     borderRadius: "6px"
   };
   return (
-    <div style={errorContainerStyles}>
+    <div style={errorContainerStyles} data-testid="errors-container">
       <Typography variant="subtitle2">
         Please correct the following errors before submiting:
       </Typography>
